@@ -176,7 +176,7 @@ const Header: React.FC = () => {
     });
     
     // 必要に応じて検索結果ページへ遷移
-    // navigate('/search'); 
+    navigate('/search'); 
     
   }, [selectedCategoryId, keyword, setSearchParams]);
 

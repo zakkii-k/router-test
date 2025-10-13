@@ -20,6 +20,7 @@ const CommonSettings = () => <h1>共通設定ページ (認証済み全員アク
 
 // 💡 AdminHeaderをインポート
 import AdminLayout from './layouts/AdminLayout.tsx';
+import SearchResultPage from './pages/searchResultPage.tsx';
 
 // ... ページコンポーネントのインポート (Home, Loginなど)
 
@@ -45,6 +46,8 @@ const App: React.FC = () => (
                 path="/login" 
                 element={<AuthGuard isPublicOnly><Login /></AuthGuard>} 
             />
+            <Route path="/search" element={<SearchResultPage />} />
+
 
             <Route 
                 path="/customer" 
