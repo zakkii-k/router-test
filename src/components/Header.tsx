@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // 外部コンポーネント・型
@@ -12,8 +12,22 @@ import SearchButton from './SearchButton.tsx';
 // 💡 .tsx や .ts の拡張子を明示的に指定しないと、ビルド時にエラーになる場合があります
 import type { DropdownItem } from '../types/Shared.ts'; 
 
-// 💡 logoImageはダミーとして扱います（実パスが不明なため）
-// import logoImage from '../assets/logo.png'; 
+
+const useClickOutside = (ref: React.RefObject<HTMLElement | null>, callback: () => void) => {
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // refが存在し、かつクリックされた場所がref要素の内部ではない場合
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, callback]);
+};
 
 // アイコン用のダミーSVGコンポーネント
 const Icon: React.FC<{ label: string, emoji: string, onClick?: () => void }> = ({ label, emoji, onClick }) => (
@@ -41,22 +55,23 @@ const Icon: React.FC<{ label: string, emoji: string, onClick?: () => void }> = (
 interface ProfileMenuProps {
   role: UserRole;
   onLogout: () => void;
+  // 外部からのRefを受け取る
+  menuRef: React.RefObject<HTMLDivElement | null>;
 }
 
-const ProfileMenu: React.FC<ProfileMenuProps> = ({ role, onLogout }) => {
-  // 💡 実際はここで useAuth などからユーザー名 (ex: Yamada Taro) を取得します
+const ProfileMenu: React.FC<ProfileMenuProps> = ({ role, onLogout, menuRef }) => {
   const userName = `${role} ユーザー`;
 
   const menuStyles: React.CSSProperties = {
       position: 'absolute',
-      top: '45px', // アイコンの高さより少し下に配置
+      top: '45px', 
       right: '0',
       width: '180px',
       backgroundColor: 'white',
       border: '1px solid #ccc',
       borderRadius: '8px',
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-      zIndex: 200, // ヘッダー内の他の要素より手前に表示
+      zIndex: 200, 
       padding: '10px 0',
       display: 'flex',
       flexDirection: 'column',
@@ -70,11 +85,11 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ role, onLogout }) => {
   };
 
   return (
-      <div style={menuStyles}>
+      <div ref={menuRef} style={menuStyles}>
           <div style={{ padding: '8px 15px', borderBottom: '1px solid #eee', fontWeight: 'bold' }}>
               {userName}
           </div>
-          <Link to="/profile/edit" style={linkStyles}>会員情報変更</Link>
+          <Link to={role === 'ADMIN' ? '/admin/profile' : '/customer/profile'} style={linkStyles}>会員情報変更</Link>
           <button onClick={onLogout} style={{ ...linkStyles, textAlign: 'left', border: 'none', background: 'none' }}>
               ログアウト
           </button>
@@ -90,6 +105,18 @@ const Header: React.FC = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+
+  // 💡 Refの定義: メニュー全体（アイコンとドロップダウン）のコンテナ
+  const menuContainerRef = useRef<HTMLDivElement>(null);
+
+  // useClickOutsideを使って、メニュー外クリックでメニューを閉じる
+  // 依存配列に setIsMenuOpen を含める必要はないが、useCallbackでラップされていないためReactの推奨に従い含める
+  useClickOutside(menuContainerRef, () => {
+      if (isMenuOpen) {
+          setIsMenuOpen(false);
+      }
+  });
+  
   // --- 検索状態の管理 ---
   const [categoryItems, setCategoryItems] = useState<DropdownItem[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -236,7 +263,7 @@ const Header: React.FC = () => {
 
                     {/* メニューが表示されている場合 */}
                     {isMenuOpen && (
-                        <ProfileMenu role={role} onLogout={handleLogout} />
+                        <ProfileMenu role={role} onLogout={handleLogout} menuRef={menuContainerRef} />
                     )}
                 </div>
             ) : (

@@ -35,37 +35,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = (newRole: UserRole) => setRole(newRole);
   const logout = () => setRole('PUBLIC');
 
-  // 初回ロード時：Spring APIから現在のセッションのロール情報を確認するシミュレーション
+  // 初回ロード時：セッションチェックのシミュレーション
   useEffect(() => {
-    const fetchCurrentRole = async () => {
-      try {
-        // 💡 実際は Spring Security のエンドポイントを叩く
-        // SpringがセッションCookieから認証状態を判断し、ロールを返す
-        const response = await fetch('/api/auth/current-role'); 
-
-        // --- シミュレーション ---
-        // 開発時は未ログインをデフォルトにするか、テスト用のロールを返す
-        if (response.ok) {
-            // サーバーからロールを取得
-            // const { userRole } = await response.json(); 
-            // setRole(userRole as UserRole);
-
-            // シミュレーションとして3秒後にADMINでログイン状態にする
-            await new Promise(resolve => setTimeout(resolve, 300));
-            setRole('ADMIN'); // テスト用ロール
-        } else {
-            // 401 Unauthorized など：未ログイン状態
+    // 💡 修正: Spring APIからのセッション確認処理のシミュレーションです。
+    // 手動ログインを優先するため、ここでは強制的なロールの上書きを削除し、
+    // 未ログイン状態(PUBLIC)で初期化します。
+    const simulateInitialCheck = async () => {
+        try {
+            // 実際はAPIコール（例: /api/auth/current-role）を行い、セッション状態を確認
+            await new Promise(resolve => setTimeout(resolve, 100)); // 短い遅延で初期チェックをシミュレート
+            
+            // 💡 認証されていないものとして初期化
             setRole('PUBLIC');
+        } catch (error) {
+            console.error("Failed to fetch auth state:", error);
+            setRole('PUBLIC');
+        } finally {
+            setLoading(false);
         }
-      } catch (error) {
-        console.error("Failed to fetch auth state:", error);
-        setRole('PUBLIC');
-      } finally {
-        setLoading(false);
-      }
     };
 
-    fetchCurrentRole();
+    simulateInitialCheck();
   }, []);
 
   const isAuthenticated = role !== 'PUBLIC';

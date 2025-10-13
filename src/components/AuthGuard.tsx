@@ -33,27 +33,28 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children, allowedRoles, isPublicO
 
     let hasAccess = false;
     let redirectPath = null;
+    const targetPath = window.location.pathname; // どのパスにアクセスしようとしているか
 
     if (isPublicOnly) {
       // ケース 1: 公開限定ページ (ログインページなど)
       if (isAuthenticated) {
-        // 認証済みなら自分のダッシュボードへリダイレクト
         redirectPath = REDIRECT_MAP[role]; 
+        console.warn(`[AuthGuard] ${role}ユーザーは公開限定ページ(${targetPath})にアクセス不可 -> ${redirectPath}へリダイレクト`); // ログ追加
       } else {
-        hasAccess = true; // 未ログインならアクセス許可
+        hasAccess = true; 
       }
     } else {
       // ケース 2: 制限付きページ
       if (!isAuthenticated) {
-        // 未ログインならログインページへリダイレクト
         redirectPath = REDIRECT_MAP['PUBLIC'];
+        console.warn(`[AuthGuard] 未ログインユーザーは制限付きページ(${targetPath})にアクセス不可 -> ${redirectPath}へリダイレクト`); // ログ追加
       } else if (allowedRoles && allowedRoles.length > 0) {
         // ロールチェック
         if (allowedRoles.includes(role)) {
           hasAccess = true; // 権限あり
         } else {
-          // 権限がない場合、自分のダッシュボードへリダイレクト
           redirectPath = REDIRECT_MAP[role]; 
+          console.error(`[AuthGuard] ${role}ユーザーは権限不足(${targetPath}) -> ${redirectPath}へリダイレクト`); // ログ追加
         }
       } else {
         // allowedRolesがない = 認証済みなら誰でもOK
