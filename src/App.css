@@ -1,0 +1,13 @@
+/* index.css または global.css */
+body, #root {
+  /* ブラウザのデフォルトマージンとパディングをゼロにする */
+  margin: 0; 
+  padding: 0;
+  /* ボックスサイズの計算方法をborder-boxに設定する（オプションだが推奨） */
+  box-sizing: border-box;
+}
+
+/* box-sizingを適用範囲を広げるために、すべての要素に適用するのが一般的 */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
