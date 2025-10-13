@@ -3,6 +3,7 @@ import { Routes, Route, Outlet } from 'react-router-dom';
 import AuthGuard from './components/AuthGuard.tsx';
 import type { UserRole } from './contexts/AuthContext.tsx';
 import Header from './components/Header.tsx';
+import { SearchProvider } from './contexts/SearchContext';
 
 // ページコンポーネントのインポート
 import Home from './pages/Home.tsx';
@@ -18,7 +19,7 @@ const CommonSettings = () => <h1>共通設定ページ (認証済み全員アク
 
 
 const App: React.FC = () => (
-  <>
+  <SearchProvider> 
     <Header />
     <main style={{ padding: '20px' }}>
       <Routes>
@@ -61,7 +62,7 @@ const App: React.FC = () => (
         <Route path="*" element={<Error404 />} />
       </Routes>
     </main>
-  </>
+  </SearchProvider>
 );
 
 export default App;
