@@ -1,0 +1,51 @@
+/* ボタン全体のスタイル */
+.heart-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: inline-block; /* アイコンのサイズに合わせる */
+  }
+  
+  /* ハートアイコンのベースとなる要素 */
+  .heart-icon {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    /* transitionで色の変化を滑らかに */
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  /* 疑似要素でハートの形を作成 */
+  .heart-icon::before,
+  .heart-icon::after {
+    content: '';
+    position: absolute;
+    left: 12px; /* 中心のX座標 */
+    top: 0;
+    width: 12px; /* 半分の幅 */
+    height: 20px; /* 全体の高さより少し短く */
+    background: white; /* デフォルトの塗りつぶし色 */
+    border: 1px solid #9ca3af; /* 枠線の色 (グレー) */
+    border-radius: 12px 12px 0 0;
+    transform-origin: 0 100%;
+  }
+  
+  /* 左上の丸み */
+  .heart-icon::before {
+    transform: rotate(-45deg);
+  }
+  
+  /* 右上の丸み */
+  .heart-icon::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+  }
+  
+  /* is-favoritedクラスが付いた時のスタイル */
+  .heart-icon.is-favorited::before,
+  .heart-icon.is-favorited::after {
+    background-color: #ef4444; /* 塗りつぶしを赤に */
+    border-color: #ef4444; /* 枠線も赤にする場合。グレーのままならこの行は不要 */
+  }
