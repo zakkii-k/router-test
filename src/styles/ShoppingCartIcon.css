@@ -1,55 +1,54 @@
-/* ボタン自体のスタイル（変更なし） */
-.cart-icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-  }
-  
-  /* アイコンとバッジを囲むコンテナ */
-  .cart-icon-container {
+/* (cart-icon-button, cart-icon-container, svg のスタイルは変更なし) */
+
+.cart-icon-container {
     position: relative;
     display: inline-block;
-    /* アイコンと数字の色をここで一括指定 */
-    color: #333; /* 例: 黒に近いグレー */
+    color: #333;
   }
   
-  /* SVGアイコンのスタイル */
   .cart-icon-container svg {
     width: 24px;
     height: 24px;
     display: block;
-    /* 親要素のcolorを継承して描画 */
     stroke: currentColor; 
   }
+  
   
   /* 個数バッジのスタイル - ここを修正 */
   .cart-item-count {
     position: absolute;
-    /* 中心よりやや上に配置 */
-    top: 30%; 
-    left: 60%;
-    transform: translate(-50%, -50%);
-    
-    /* --- ここからが新しいスタイルの核 --- */
-    
-    /* 1. 背景と枠線をなくす */
-    background-color: transparent;
-    border: none;
-    
-    /* 2. 数字の色を親(アイコン)と同じにする */
-    color: currentColor;
+    top: 0;
+    right: 0;
+    transform: translate(30%, -40%); /* 位置を微調整 */
   
-    /* 3. text-shadowで数字に白い縁取りをつける */
-    text-shadow: 
-      -1.5px -1.5px 0 #fff,  
-       1.5px -1.5px 0 #fff,
-      -1.5px  1.5px 0 #fff,
-       1.5px  1.5px 0 #fff;
+    /* 1. 円形の白い背景を定義 */
+    background-color: white;
+    color: currentColor; /* アイコンと同じ色を継承 */
     
-    /* フォントを見やすく調整 */
-    font-size: 0.9rem; /* 少し大きめに */
-    font-weight: 900;  /* 太くして縁取りを強調 */
+    /* 2. 最大幅(直径)を固定 */
+    width: 20px;
+    height: 20px;
+    border-radius: 50%; /* これで完全な円になる */
+    
+    /* 影をつけて立体感を出す */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  
+    /* 3. 中の数字を上下左右中央に配置 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-weight: bold;
     line-height: 1;
-    padding: 0; /* 余計な余白を削除 */
+  }
+  
+  /* --- 4. 桁数に応じた文字サイズ調整 --- */
+  .cart-item-count.single-digit {
+    font-size: 0.8rem; /* 1桁のときの文字サイズ */
+  }
+  
+  .cart-item-count.double-digits {
+    font-size: 0.65rem; /* 2桁以上('99+')のときの文字サイズ */
+    /* 文字が円に収まるように、少しだけ位置を調整しても良い */
+    letter-spacing: -0.5px; 
   }
