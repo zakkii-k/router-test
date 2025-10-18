@@ -1,0 +1,55 @@
+/* ボタン自体のスタイル（変更なし） */
+.cart-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  /* アイコンとバッジを囲むコンテナ */
+  .cart-icon-container {
+    position: relative;
+    display: inline-block;
+    /* アイコンと数字の色をここで一括指定 */
+    color: #333; /* 例: 黒に近いグレー */
+  }
+  
+  /* SVGアイコンのスタイル */
+  .cart-icon-container svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+    /* 親要素のcolorを継承して描画 */
+    stroke: currentColor; 
+  }
+  
+  /* 個数バッジのスタイル - ここを修正 */
+  .cart-item-count {
+    position: absolute;
+    /* 中心よりやや上に配置 */
+    top: 30%; 
+    left: 60%;
+    transform: translate(-50%, -50%);
+    
+    /* --- ここからが新しいスタイルの核 --- */
+    
+    /* 1. 背景と枠線をなくす */
+    background-color: transparent;
+    border: none;
+    
+    /* 2. 数字の色を親(アイコン)と同じにする */
+    color: currentColor;
+  
+    /* 3. text-shadowで数字に白い縁取りをつける */
+    text-shadow: 
+      -1.5px -1.5px 0 #fff,  
+       1.5px -1.5px 0 #fff,
+      -1.5px  1.5px 0 #fff,
+       1.5px  1.5px 0 #fff;
+    
+    /* フォントを見やすく調整 */
+    font-size: 0.9rem; /* 少し大きめに */
+    font-weight: 900;  /* 太くして縁取りを強調 */
+    line-height: 1;
+    padding: 0; /* 余計な余白を削除 */
+  }
